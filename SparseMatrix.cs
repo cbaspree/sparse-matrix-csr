@@ -16,8 +16,6 @@ namespace sparse_matrix_csr
 
         public SparseMatrix(int[][] matrix)
         {
-            // TODO: validate
-
             _values = new List<int>();
             _columnIndices = new List<int>();
             _rowPointers = new List<int>();

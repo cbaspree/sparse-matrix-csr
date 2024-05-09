@@ -20,7 +20,6 @@
                 [0, 0, 0, 0, 0, 80],
             ];
 
-
             SparseMatrix sparseMatrix1 = new SparseMatrix(matrix1);
             sparseMatrix1.Print();
 
