@@ -130,6 +130,48 @@ namespace sparse_matrix_csr
             return result;
         }
 
+        public SparseMatrix Transpose()
+        {
+            SparseMatrix result = new SparseMatrix(_rowCount, _columnCount);
+
+            // Add "empty" elements to values
+            for (int i = 0; i < _nonZeroValues; ++i)
+            {
+                result.Values.Add(0);
+                result.ColumnIndices.Add(0);
+            }
+
+            // Count non zero values per column
+            int[] countPerColumn = new int[_columnCount];
+            for (int i = 0; i < _nonZeroValues; ++i)
+            {
+                countPerColumn[_columnIndices[i]]++;
+            }
+
+            // Fill new row pointers
+            for (int i = 0; i < _columnCount; ++i)
+            {
+                result.RowPointers.Add(result.RowPointers[i] + countPerColumn[i]);
+            }
+
+            for (int r = 0; r < _rowCount; ++r)
+            {
+                int rowStart = _rowPointers[r];
+                int rowEnd = _rowPointers[r + 1];
+
+                for (int c = rowStart; c < rowEnd; ++c)
+                {
+                    int column = _columnIndices[c];
+                    int valueIndex = result.RowPointers[column + 1] - countPerColumn[column];
+                    result.Values[valueIndex] = _values[c];
+                    result.ColumnIndices[valueIndex] = r;
+                    countPerColumn[column]--;
+                }
+            }
+
+            return result;
+        }
+
         public void Print()
         {
             Console.WriteLine(FormatForPrinting("Values", _values));

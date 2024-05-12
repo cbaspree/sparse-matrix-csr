@@ -117,5 +117,29 @@ namespace Tests
             Assert.IsTrue(expectedColumnIndices.SequenceEqual(result.ColumnIndices));
             Assert.IsTrue(expectedRowPointers.SequenceEqual(result.RowPointers));
         }
+
+        [Test]
+        public void TestMatrixTranspose()
+        {
+            int[][] matrix =
+            [
+                [2, -9, 3],
+                [13, 11, -17],
+                [3, 6, 15],
+                [4, 13, 1],
+            ];
+
+            SparseMatrix sparseMatrix = new SparseMatrix(matrix);
+            SparseMatrix transpose = sparseMatrix.Transpose();
+
+            List<int> expectedValues = new List<int>() { 2, 13, 3, 4, -9, 11, 6, 13, 3, -17, 15, 1 };
+            List<int> expectedColumnIndices = new List<int>() { 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3 };
+            List<int> expectedRowPointers = new List<int>() { 0, 4, 8, 12 };
+
+            Assert.IsNotNull(transpose);
+            Assert.IsTrue(expectedValues.SequenceEqual(transpose.Values));
+            Assert.IsTrue(expectedColumnIndices.SequenceEqual(transpose.ColumnIndices));
+            Assert.IsTrue(expectedRowPointers.SequenceEqual(transpose.RowPointers));
+        }
     }
 }
