@@ -62,31 +62,31 @@ namespace sparse_matrix_csr
         public List<int> ColumnIndices { get => _columnIndices; }
         public List<int> RowPointers { get => _rowPointers; }
 
-        public SparseMatrix Add(SparseMatrix matrix)
+        public SparseMatrix Add(SparseMatrix other)
         {
-            if (_rowCount != matrix.RowCount)
+            if (_rowCount != other.RowCount)
             {
                 throw new ArgumentException("Matrices must have the same number of rows");
             }
 
-            if (_columnCount != matrix.ColumnCount)
+            if (_columnCount != other.ColumnCount)
             {
                 throw new ArgumentException("Matrices must have the same number of columns");
             }
 
-            SparseMatrix result = new SparseMatrix(matrix.RowCount, matrix.ColumnCount);
+            SparseMatrix result = new SparseMatrix(other.RowCount, other.ColumnCount);
 
             for (int r = 0; r < _rowCount; ++r)
             {
                 int rowStart = _rowPointers[r];
                 int rowEnd = _rowPointers[r + 1];
-                int otherRowStart = matrix.RowPointers[r];
-                int otherRowEnd = matrix.RowPointers[r + 1];
+                int otherRowStart = other.RowPointers[r];
+                int otherRowEnd = other.RowPointers[r + 1];
 
                 while (rowStart < rowEnd && otherRowStart < otherRowEnd)
                 {
                     int column = _columnIndices[rowStart];
-                    int otherColumn = matrix.ColumnIndices[otherRowStart];
+                    int otherColumn = other.ColumnIndices[otherRowStart];
 
                     if (column < otherColumn)
                     {
@@ -95,13 +95,13 @@ namespace sparse_matrix_csr
                     }
                     else if (column > otherColumn)
                     {
-                        result.AddValue(matrix.Values[otherRowStart], otherColumn);
+                        result.AddValue(other.Values[otherRowStart], otherColumn);
                         ++otherRowStart;
                     }
                     else
                     {
                         result.AddValue(
-                            _values[rowStart] + matrix.Values[otherRowStart],
+                            _values[rowStart] + other.Values[otherRowStart],
                             column);
 
                         ++rowStart;
@@ -113,7 +113,7 @@ namespace sparse_matrix_csr
                 {
                     for (int i = otherRowStart; i < otherRowEnd; ++i)
                     {
-                        result.AddValue(matrix.Values[i], matrix.ColumnIndices[i]);
+                        result.AddValue(other.Values[i], other.ColumnIndices[i]);
                     }
                 }
                 else
@@ -172,15 +172,15 @@ namespace sparse_matrix_csr
             return result;
         }
 
-        public SparseMatrix Multiply(SparseMatrix matrix)
+        public SparseMatrix Multiply(SparseMatrix other)
         {
-            if (_columnCount != matrix.RowCount)
+            if (_columnCount != other.RowCount)
             {
                 throw new ArgumentException("The number of columns of the first matrix must be equal to the number of rows of the second matrix.");
             }
 
-            SparseMatrix transposedMatrix = matrix.Transpose();
-            SparseMatrix result = new SparseMatrix(_rowCount, matrix.ColumnCount);
+            SparseMatrix transposedMatrix = other.Transpose();
+            SparseMatrix result = new SparseMatrix(_rowCount, other.ColumnCount);
             int valuesPerRow = 0;
 
             for (int row = 0; row < _rowCount; ++row)
@@ -188,7 +188,7 @@ namespace sparse_matrix_csr
                 int rowStart = _rowPointers[row];
                 int rowEnd = _rowPointers[row + 1];
 
-                for (int column = 0; column < matrix.ColumnCount; ++column)
+                for (int column = 0; column < other.ColumnCount; ++column)
                 {
                     int rowIndex = rowStart;
                     int columnStart = transposedMatrix.RowPointers[column];
@@ -197,18 +197,16 @@ namespace sparse_matrix_csr
 
                     while (rowIndex < rowEnd && columnStart < columnEnd)
                     {
-                        int col1 = _columnIndices[rowIndex];
-                        int col2 = transposedMatrix.ColumnIndices[columnStart];
+                        int columnIndex = _columnIndices[rowIndex];
+                        int otherColumnIndex = transposedMatrix.ColumnIndices[columnStart];
 
-                        if (col1 == col2)
+                        if (columnIndex == otherColumnIndex)
                         {
-                            int val1 = _values[rowIndex];
-                            int val2 = transposedMatrix.Values[columnStart];
-                            sum += val1 * val2;
+                            sum += _values[rowIndex] * transposedMatrix.Values[columnStart];
                             ++rowIndex;
                             ++columnStart;
                         }
-                        else if (col1 < col2)
+                        else if (columnIndex < otherColumnIndex)
                         {
                             ++rowIndex;
                         }
