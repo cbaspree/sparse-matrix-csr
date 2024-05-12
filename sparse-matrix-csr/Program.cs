@@ -6,17 +6,18 @@
         {
             int[][] matrix1 =
             [
-                [2, 13, 3, 4],
-                [-9, 11, 6, 13],
-                [3, -17, 15, 1],
+                [0, 0, 0, 0],
+                [5, 8, 0, 0],
+                [0, 0, 3, 0],
+                [0, 6, 0, 0],
             ];
 
             int[][] matrix2 =
             [
-                [10, 20, 0, 0, 0, 0],
-                [0, 30, 0, 40, 0, 0],
-                [0, 0, 50, 60, 70, 0],
-                [0, 0, 0, 0, 0, 80],
+                [1, 0, 5, 0],
+                [2, 3, 0, 0],
+                [4, 0, 0, 1],
+                [0, 0, 2, 0],
             ];
 
             SparseMatrix sparseMatrix1 = new SparseMatrix(matrix1);
@@ -24,6 +25,8 @@
 
             SparseMatrix sparseMatrix2 = new SparseMatrix(matrix2);
             sparseMatrix2.Print();
+
+            sparseMatrix2.Transpose().Print();
         }
     }
 }

@@ -141,5 +141,66 @@ namespace Tests
             Assert.IsTrue(expectedColumnIndices.SequenceEqual(transpose.ColumnIndices));
             Assert.IsTrue(expectedRowPointers.SequenceEqual(transpose.RowPointers));
         }
+
+        [Test]
+        public void TestMatrixMultiplicationDifferentColumnRowCount()
+        {
+            int[][] matrix1 =
+            [
+                [0, 0, 0, 0],
+                [5, 8, 0, 0],
+                [0, 0, 3, 0],
+                [0, 6, 0, 0],
+            ];
+
+            int[][] matrix2 =
+            [
+                [1, 0, 5, 0],
+                [2, 3, 0, 0],
+                [4, 0, 0, 1],
+            ];
+
+            SparseMatrix sparseMatrix1 = new SparseMatrix(matrix1);
+            SparseMatrix sparseMatrix2 = new SparseMatrix(matrix2);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => { sparseMatrix1.Multiply(sparseMatrix2); });
+
+            Assert.That(exception.Message,
+                Is.EqualTo("The number of columns of the first matrix must be equal to the number of rows of the second matrix."));
+        }
+
+        [Test]
+        public void TestMatrixMultiplication()
+        {
+            int[][] matrix1 =
+            [
+                [0, 0, 0, 0],
+                [5, 8, 0, 0],
+                [0, 0, 3, 0],
+                [0, 6, 0, 0],
+            ];
+
+            int[][] matrix2 =
+            [
+                [1, 0, 5, 0],
+                [2, 3, 0, 0],
+                [4, 0, 0, 1],
+                [0, 0, 2, 0],
+            ];
+
+            SparseMatrix sparseMatrix1 = new SparseMatrix(matrix1);
+            SparseMatrix sparseMatrix2 = new SparseMatrix(matrix2);
+            SparseMatrix result = sparseMatrix1.Multiply(sparseMatrix2);
+
+            List<int> expectedValues = new List<int>() { 21, 24, 25, 12, 3, 12, 18 };
+            List<int> expectedColumnIndices = new List<int>() { 0, 1, 2, 0, 3, 0, 1 };
+            List<int> expectedRowPointers = new List<int>() { 0, 0, 3, 5, 7 };
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(expectedValues.SequenceEqual(result.Values));
+            Assert.IsTrue(expectedColumnIndices.SequenceEqual(result.ColumnIndices));
+            Assert.IsTrue(expectedRowPointers.SequenceEqual(result.RowPointers));
+        }
     }
 }

@@ -172,6 +172,65 @@ namespace sparse_matrix_csr
             return result;
         }
 
+        public SparseMatrix Multiply(SparseMatrix matrix)
+        {
+            if (_columnCount != matrix.RowCount)
+            {
+                throw new ArgumentException("The number of columns of the first matrix must be equal to the number of rows of the second matrix.");
+            }
+
+            SparseMatrix transposedMatrix = matrix.Transpose();
+            SparseMatrix result = new SparseMatrix(_rowCount, matrix.ColumnCount);
+            int valuesPerRow = 0;
+
+            for (int row = 0; row < _rowCount; ++row)
+            {
+                int rowStart = _rowPointers[row];
+                int rowEnd = _rowPointers[row + 1];
+
+                for (int column = 0; column < matrix.ColumnCount; ++column)
+                {
+                    int rowIndex = rowStart;
+                    int columnStart = transposedMatrix.RowPointers[column];
+                    int columnEnd = transposedMatrix.RowPointers[column + 1];
+                    int sum = 0;
+
+                    while (rowIndex < rowEnd && columnStart < columnEnd)
+                    {
+                        int col1 = _columnIndices[rowIndex];
+                        int col2 = transposedMatrix.ColumnIndices[columnStart];
+
+                        if (col1 == col2)
+                        {
+                            int val1 = _values[rowIndex];
+                            int val2 = transposedMatrix.Values[columnStart];
+                            sum += val1 * val2;
+                            ++rowIndex;
+                            ++columnStart;
+                        }
+                        else if (col1 < col2)
+                        {
+                            ++rowIndex;
+                        }
+                        else
+                        {
+                            ++columnStart;
+                        }
+                    }
+
+                    if (sum > 0)
+                    {
+                        result.AddValue(sum, column);
+                        ++valuesPerRow;
+                    }
+                }
+
+                result.RowPointers.Add(valuesPerRow);
+            }
+
+            return result;
+        }
+
         public void Print()
         {
             Console.WriteLine(FormatForPrinting("Values", _values));
