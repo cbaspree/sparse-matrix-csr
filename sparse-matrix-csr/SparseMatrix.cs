@@ -237,7 +237,7 @@ namespace sparse_matrix_csr
             Console.WriteLine();
         }
 
-        public void AddValue(int value, int columnIndex)
+        private void AddValue(int value, int columnIndex)
         {
             _values.Add(value);
             _columnIndices.Add(columnIndex);
