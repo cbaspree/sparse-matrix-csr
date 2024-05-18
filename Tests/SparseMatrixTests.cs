@@ -8,7 +8,7 @@ namespace Tests
     public class SparseMatrixTests
     {
         [Test]
-        public void TestConstructorFrom2DArray()
+        public void Construct_sparse_matrix_from_2D_array()
         {
             int[][] matrix =
             [
@@ -30,7 +30,7 @@ namespace Tests
         }
 
         [Test]
-        public void TestMatrixAdditionDifferentRowCount()
+        public void Addition_with_different_row_count_is_invalid()
         {
             int[][] matrix1 =
             [
@@ -57,7 +57,7 @@ namespace Tests
         }
 
         [Test]
-        public void TestMatrixAdditionDifferentColumnCount()
+        public void Addition_with_different_column_count_is_invalid()
         {
             int[][] matrix1 =
             [
@@ -85,7 +85,7 @@ namespace Tests
         }
 
         [Test]
-        public void TestMatrixAddition()
+        public void Matrix_addition()
         {
             int[][] matrix1 =
             [
@@ -119,7 +119,7 @@ namespace Tests
         }
 
         [Test]
-        public void TestMatrixTranspose()
+        public void Matrix_transpose()
         {
             int[][] matrix =
             [
@@ -143,7 +143,7 @@ namespace Tests
         }
 
         [Test]
-        public void TestMatrixMultiplicationDifferentColumnRowCount()
+        public void Multiplication_with_different_column_or_row_count_is_invalid()
         {
             int[][] matrix1 =
             [
@@ -171,7 +171,7 @@ namespace Tests
         }
 
         [Test]
-        public void TestMatrixMultiplication()
+        public void Matrix_multiplication()
         {
             int[][] matrix1 =
             [
