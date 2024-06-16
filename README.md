@@ -3,7 +3,7 @@
 A simple C# class that implements compressed sparse row (CSR) format to store a
 matrix where the majority of elements are zeros.
 
-## Motiviation
+## Motivation
 
 The first time I interviewed at a FAANG company, I was asked to represent a 
 matrix with mostly zero elements in a way that would use less memory. 
