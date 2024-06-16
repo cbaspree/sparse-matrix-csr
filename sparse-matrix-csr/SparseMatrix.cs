@@ -2,6 +2,9 @@
 
 namespace sparse_matrix_csr
 {
+    /// <summary>
+    /// This class represents a sparse matrix using the compressed sparse row (CSR) format
+    /// </summary>
     public class SparseMatrix
     {
         private int _rowCount;
@@ -11,13 +14,6 @@ namespace sparse_matrix_csr
         private List<int> _values;
         private List<int> _columnIndices;
         private List<int> _rowPointers;
-
-        public SparseMatrix()
-        {
-            _values = new List<int>();
-            _columnIndices = new List<int>();
-            _rowPointers = new List<int>();
-        }
 
         public SparseMatrix(int rowCount, int columnCount)
         {
